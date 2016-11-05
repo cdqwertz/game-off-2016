@@ -12,6 +12,8 @@ var time = new function() {
 	}
 }();
 
+var loaded_map = null;
+
 function load() {
 	canvas = document.getElementById("canvas");
 	ctx = canvas.getContext("2d");
@@ -19,11 +21,19 @@ function load() {
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
 
+	ctx.translate(window.innerWidth/2, window.innerHeight/2);
+
 	window.requestAnimationFrame(update);
 }
 
 function update(t) {
 	time.update(t);
-	console.log(time.dtime);
+
+	if(loaded_map) {
+		loaded_map.update();
+		ctx.clearRect(-canvas.width/2, -canvas.height/2, canvas.width, canvas.height);
+		loaded_map.draw();
+	}
+
 	window.requestAnimationFrame(update);
 }

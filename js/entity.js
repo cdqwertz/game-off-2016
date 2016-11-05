@@ -1,4 +1,4 @@
-var entities = function() {
+var entities = new function() {
 	this.registered_entities = [];
 
 	this.register_entity = function(blueprint) {
@@ -10,18 +10,28 @@ var entities = function() {
 	}
 
 	//classes
-	this.entity_blueprint = function (hp, type, behaviour) {
+	this.entity_blueprint = function (texture, hp, type, behaviour) {
+		this.img = new Image();
+		this.img.src = texture;
+
 		this.hp = hp;
 		this.type = type;
-		this.behavior = behaviour;
+		this.behaviour = behaviour;
 	}
 
 	this.entity = function (x, y, type) {
 		this.x = x;
 		this.y = y;
 		this.type = type;
+		this.img = entities.get_blueprint(type).img;
 		this.hp = entities.get_blueprint(type).hp;
 		this.update = entities.get_blueprint(type).behaviour;
+		
+		this.timer = 0;
+
+		this.draw = function() {
+			ctx.drawImage(this.img, this.x, this.y);
+		}
 	}
 
 	//

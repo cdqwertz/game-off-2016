@@ -1,12 +1,27 @@
-function tileset(src, w, h) {
-	this.src = src;
+function tileset() {
+	this.tiles = [];
+
+	this.register_tile = function(tile) {
+		this.tiles.push(tile)
+	};
+
+	this.update = function(id, m, x, y) {
+		this.tiles[id].update(m, x, y);
+	};
+
+	this.draw = function(id, x, y, w, h) {
+		this.tiles[id].draw(x, y, w, h);
+	};
+}
+
+function tile(img, behaviour, allow_build) {
 	this.img = new Image();
-	this.img.src = this.src;
+	this.img.src = img;
 
-	this.w = w;
-	this.h = h;
+	this.update = behaviour || function(m, x, y) {};
+	this.allow_build = allow_build || [true, false, true];
 
-	function draw_tile(id, tile_x, tile_y, tile_w, tile_h) {
-		ctx.drawImage(this.img, this.w*id, 0, this.w, this.h, tile_x, tile_y, tile_w, tile_h);
+	this.draw = function(pos_x, pos_y, tile_w, tile_h) {
+		ctx.drawImage(this.img,pos_x, pos_y, tile_w, tile_h);
 	}
 }
