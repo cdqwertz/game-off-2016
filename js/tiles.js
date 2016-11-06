@@ -21,6 +21,8 @@ function tile(img, behaviour, allow_build) {
 	this.update = behaviour || function(m, x, y) {};
 	this.allow_build = allow_build || [true, false, true];
 
+	this.timer = 0;
+
 	this.draw = function(pos_x, pos_y, tile_w, tile_h) {
 		ctx.drawImage(this.img,pos_x, pos_y, tile_w, tile_h);
 	}

@@ -1,5 +1,6 @@
-function map(data, t, x, y, w, h) {
+function map(data, path, t, x, y, w, h) {
 	this.map = data;
+	this.path = path;
 	this.tileset = t;
 	this.entities = [];
 
@@ -11,12 +12,12 @@ function map(data, t, x, y, w, h) {
 	this.update = function () {
 		for(var i = 0; i < this.map.length; i++) {
 			for(var j = 0; j < this.map[i].length; j++) {
-				this.tileset.update(this.map[i][j], this, i, j);
+				this.tileset.update(this.map[i][j], this,j, i);
 			}
 		}
 			
 		for(var i = 0; i < this.entities.length; i++) {
-			this.entities[i].update(this.entities[i],this);
+			this.entities[i].update(this);
 		}
 	};
 
@@ -37,13 +38,30 @@ function map(data, t, x, y, w, h) {
 
 	this.get_pos = function(x, y) {
 		return ([
-			y*this.x-(this.map[0].length*this.x+this.w)/2,
-			x*this.y-(this.map.length*this.y+this.h)/2
+			x*this.x-(this.map[0].length*this.x+this.w)/2,
+			y*this.y-(this.map.length*this.y+this.h)/2
 			]);
 	};
 
-	this.spawn_enitity = function(i, j, type) {
-		var pos = this.get_pos(i, j);
-		this.entities.push(new entities.entity(pos[0], pos[1], type));
+	this.convert_pos = function(x, y) {
+		return ([
+			Math.floor((x+(this.map[0].length*this.x+this.w)/2)/this.x + 0.5),
+			Math.floor((y+(this.map.length*this.y+this.h)/2)/this.y + 0.5),
+			]);
 	};
+
+	this.spawn_entity = function(i, j, type) {
+		var pos = this.get_pos(i, j);
+		var e = new entities.entity(pos[0], pos[1], type);
+		this.entities.push(e);
+		e.start(this);
+	};
+
+	this.remove_entity = function(e) {
+		for(var i = 0; i < this.entities.length; i++) {
+			if(this.entities[i] == e) {
+				this.entities.splice(i,1);
+			}
+		}
+	}
 }

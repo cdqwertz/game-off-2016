@@ -31,8 +31,10 @@ function update(t) {
 
 	if(loaded_map) {
 		loaded_map.update();
+		building.update(loaded_map);
 		ctx.clearRect(-canvas.width/2, -canvas.height/2, canvas.width, canvas.height);
 		loaded_map.draw();
+		building.draw(loaded_map);
 	}
 
 	window.requestAnimationFrame(update);
