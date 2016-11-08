@@ -57,12 +57,12 @@ var my_map = new map([
 	[7,8]
 ], my_tileset, 64, 12*4, 64, 64);
 
-var entity_start = function(m) {
+var enemy_start = function(m) {
 	this.i = 0;
 	this.destination = m.get_pos(m.path[0][0], m.path[0][1]);
 };
 
-var entity_update = function(m) {
+var enemy_update = function(m) {
 	if(utils.distance(this.x, this.y, this.destination[0], this.destination[1]) < 4) {
 		this.i++;
 		if(this.i < m.path.length) {
@@ -100,8 +100,9 @@ entities.register_entity(new entities.entity_blueprint(
 	"textures/entities/test",
 	1,
 	0,
-	entity_start,
-	entity_update
+	enemy_start,
+	enemy_update
 ));
 
-loaded_map = my_map;
+core.register_map(my_map);
+core.loaded_map = 0;

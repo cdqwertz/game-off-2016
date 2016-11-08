@@ -8,7 +8,13 @@ var input = new function() {
 	};
 
 	this.onmousedown = function(e) {
-		building.onmousedown(e, loaded_map);
+		if(core.game_state == 0) {
+			core.game_state = 2;
+		} else if (core.game_state == 1) {
+			
+		} else {
+			building.onmousedown(e, core.get_map());
+		}
 	};
 
 	this.onwheel = function(e) {

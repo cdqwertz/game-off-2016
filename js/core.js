@@ -12,30 +12,61 @@ var time = new function() {
 	}
 }();
 
-var loaded_map = null;
+var core = new function() {
+	this.registered_maps = [];
+	this.loaded_map = -1;
+	this.game_state = 0;
+	this.health = 6;
 
-function load() {
-	canvas = document.getElementById("canvas");
-	ctx = canvas.getContext("2d");
+	this.img_start_game = new Image();
+	this.img_start_game.src = "textures/menu/start_game.png";
 
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
+	this.register_map = function(m) {
+		this.registered_maps.push(m);
+	};
 
-	ctx.translate(window.innerWidth/2, window.innerHeight/2);
+	this.get_map = function() {
+		return this.registered_maps[this.loaded_map];
+	};
 
-	window.requestAnimationFrame(update);
-}
+	this.load = function () {
+		canvas = document.getElementById("canvas");
+		ctx = canvas.getContext("2d");
 
-function update(t) {
-	time.update(t);
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
 
-	if(loaded_map) {
-		loaded_map.update();
-		building.update(loaded_map);
-		ctx.clearRect(-canvas.width/2, -canvas.height/2, canvas.width, canvas.height);
-		loaded_map.draw();
-		building.draw(loaded_map);
+		ctx.translate(window.innerWidth/2, window.innerHeight/2);
+
+		window.requestAnimationFrame(core.update);
+	};
+
+	this.update = function (t) {
+		time.update(t);
+
+		if(core.game_state == 0) {
+			ctx.clearRect(-canvas.width/2, -canvas.height/2, canvas.width, canvas.height);
+			ctx.drawImage(core.img_start_game, -core.img_start_game.width/2, -core.img_start_game.height/2);
+		} else if(core.game_state == 1) {
+			ctx.clearRect(-canvas.width/2, -canvas.height/2, canvas.width, canvas.height);
+		} else if(core.game_state == 2) {
+			if(core.loaded_map != -1) {
+				core.registered_maps[core.loaded_map].update();
+				building.update(core.registered_maps[core.loaded_map]);
+				ctx.clearRect(-canvas.width/2, -canvas.height/2, canvas.width, canvas.height);
+				core.registered_maps[core.loaded_map].draw();
+				building.draw(core.registered_maps[core.loaded_map]);
+
+				if(this.health == 0 || this.health < 0) {
+					this.health = 6;
+					this.loaded_map = 0;
+					this.game_state = 1;
+				}
+			} else {
+				game_state = 1;
+			}
+		}
+
+		window.requestAnimationFrame(core.update);
 	}
-
-	window.requestAnimationFrame(update);
-}
+}();
