@@ -1,15 +1,15 @@
-var utils = new function() {
-	this.distance = function (a, b, c, d) {
-		return(Math.pow(Math.pow(a-c, 2) + Math.pow(b-d, 2), 0.5));
-	}
-}
-
 var my_tileset = new tileset();
+
+//my_tileset.register_tile(new tile(
+//	texture : string,
+//	update : function(map),
+//	allow_place : Array
+//));
 
 my_tileset.register_tile(new tile(
 	"textures/tiles/air.png",
 	null,
-	[false, true, false]
+	[false, true, false, false]
 ));
 
 my_tileset.register_tile(new tile(
@@ -25,14 +25,20 @@ my_tileset.register_tile(new tile(
 			this.timer = 0;
 		}
 	},
-	[true, false, false]
+	[true, false, false, false]
 ));
 
 my_tileset.register_tile(new tile(
 	"textures/tiles/floor_server.png"
 ));
 
-building.register_entity(0);
+//new map() (
+//	data : Array,
+//	path : Array,
+//	tileset : tileset,
+//	x : int, y : int,
+//	w : int, h : int
+//);
 
 var my_map = new map([
 	[2, 1, 1, 1, 1, 1, 1, 1],
@@ -78,6 +84,7 @@ var enemy_update = function(m) {
 
 			this.destination = m.get_pos(m.path[this.i][0], m.path[this.i][1]);
 		} else {
+			core.health--;
 			m.remove_entity(this);
 		}
 		this.timer = 0;
@@ -94,7 +101,22 @@ var enemy_update = function(m) {
 			this.y += (b/c)/10.0 * time.dtime;
 		}
 	}
+
+	{
+		if(this.hp < 0 || this.hp == 0) {
+			core.coins += 2;
+			m.remove_entity(this);
+		}
+	}
 };
+
+//entities.register_entity(new entities.entity_blueprint(
+//	texture : string,
+//	hp : int,
+//	type : int,
+//	start : function(map)
+//	update : function(map)
+//));
 
 entities.register_entity(new entities.entity_blueprint(
 	"textures/entities/test",
@@ -104,5 +126,30 @@ entities.register_entity(new entities.entity_blueprint(
 	enemy_update
 ));
 
+entities.register_entity(new entities.entity_blueprint(
+	"textures/entities/trap",
+	1,
+	3,
+	function(m) {
+	},
+	function(m) {
+		this.timer += time.dtime;
+		if(this.timer > 100) {
+			var e = m.get_enemies_near(this.x, this.y, 32);
+			if(e.length) {
+				for(var i = 0; i < e.length; i++) {
+					e[i].hp -= 1;
+				}
+				m.remove_entity(this);
+			}
+			this.timer = 0;
+		}
+	}
+));
+
+//building.register_entity(id : int, cost : int)
+building.register_entity(1, 1);
+
+//core.register_map(map : map);
 core.register_map(my_map);
 core.loaded_map = 0;

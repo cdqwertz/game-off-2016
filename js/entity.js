@@ -50,5 +50,6 @@ var entities = new function() {
 		this.enemy = 0;
 		this.defense = 1;
 		this.barrier = 2;
+		this.trap = 3;
 	}();
 }();

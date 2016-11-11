@@ -50,6 +50,10 @@ function map(data, path, t, x, y, w, h) {
 			]);
 	};
 
+	this.reset = function() {
+		this.entities = [];
+	};
+
 	this.spawn_entity = function(i, j, type) {
 		var pos = this.get_pos(i, j);
 		var e = new entities.entity(pos[0], pos[1], type);
@@ -63,5 +67,32 @@ function map(data, path, t, x, y, w, h) {
 				this.entities.splice(i,1);
 			}
 		}
+	};
+
+	this.get_entities_near_tile = function(x, y, range) {
+		var pos = this.get_pos(x, y);
+		return(this.get_entities_near(pos[0], pos[1], range));
 	}
+
+	this.get_entities_near = function(x, y, range) {
+		var e = []
+		for(var i = 0; i < this.entities.length; i++) {
+			if(utils.distance(x, y, this.entities[i].x, this.entities[i].y) < range) {
+				e.push(this.entities[i])
+			}
+		}
+
+		return e;
+	};
+
+	this.get_enemies_near = function(x, y, range) {
+		var e = []
+		for(var i = 0; i < this.entities.length; i++) {
+			if(utils.distance(x, y, this.entities[i].x, this.entities[i].y) < range && this.entities[i].type == 0) {
+				e.push(this.entities[i])
+			}
+		}
+
+		return e;
+	};
 }

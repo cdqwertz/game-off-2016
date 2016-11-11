@@ -19,7 +19,7 @@ function tile(img, behaviour, allow_build) {
 	this.img.src = img;
 
 	this.update = behaviour || function(m, x, y) {};
-	this.allow_build = allow_build || [true, false, true];
+	this.allow_build = allow_build || [true, false, true, true];
 
 	this.timer = 0;
 

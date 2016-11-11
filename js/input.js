@@ -25,3 +25,9 @@ var input = new function() {
 window.onmousemove = input.onmousemove;
 window.onmousedown = input.onmousedown;
 window.onwheel = input.onwheel;
+
+var utils = new function() {
+	this.distance = function (a, b, c, d) {
+		return(Math.pow(Math.pow(a-c, 2) + Math.pow(b-d, 2), 0.5));
+	}
+}

@@ -17,7 +17,9 @@ var core = new function() {
 	this.loaded_map = -1;
 	this.game_state = 0;
 	this.health = 6;
+	this.coins = 1;
 
+	//Buttons
 	this.img_start_game = new Image();
 	this.img_start_game.src = "textures/menu/start_game.png";
 
@@ -45,11 +47,15 @@ var core = new function() {
 		time.update(t);
 
 		if(core.game_state == 0) {
+			//Main Menu
 			ctx.clearRect(-canvas.width/2, -canvas.height/2, canvas.width, canvas.height);
 			ctx.drawImage(core.img_start_game, -core.img_start_game.width/2, -core.img_start_game.height/2);
 		} else if(core.game_state == 1) {
+			//Select Level
 			ctx.clearRect(-canvas.width/2, -canvas.height/2, canvas.width, canvas.height);
+			core.game_state = 0;
 		} else if(core.game_state == 2) {
+			//Game
 			if(core.loaded_map != -1) {
 				core.registered_maps[core.loaded_map].update();
 				building.update(core.registered_maps[core.loaded_map]);
@@ -57,13 +63,15 @@ var core = new function() {
 				core.registered_maps[core.loaded_map].draw();
 				building.draw(core.registered_maps[core.loaded_map]);
 
-				if(this.health == 0 || this.health < 0) {
-					this.health = 6;
-					this.loaded_map = 0;
-					this.game_state = 1;
+				if(core.health == 0 || core.health < 0) {
+					core.registered_maps[core.loaded_map].reset()
+					core.health = 6;
+					core.coins = 1;
+					core.loaded_map = 0;
+					core.game_state = 1;
 				}
 			} else {
-				game_state = 1;
+				core.game_state = 1;
 			}
 		}
 
