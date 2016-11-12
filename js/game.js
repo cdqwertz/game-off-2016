@@ -73,13 +73,13 @@ var enemy_update = function(m) {
 		this.i++;
 		if(this.i < m.path.length) {
 			if(m.path[this.i][0] > m.path[this.i-1][0]) {
-				this.rotation = 1;
+				this.rotation = -Math.PI/2; // 1
 			} else if(m.path[this.i][0] < m.path[this.i-1][0]) {
-				this.rotation = 3;
+				this.rotation = -Math.PI/2 * 3; // 3
 			} else if(m.path[this.i][1] > m.path[this.i-1][1]) {
-				this.rotation = 0;
+				this.rotation = 0; // 0
 			} else if(m.path[this.i][1] < m.path[this.i-1][1]) {
-				this.rotation = 2;
+				this.rotation = -Math.PI/2 * 2; // 2
 			}
 
 			this.destination = m.get_pos(m.path[this.i][0], m.path[this.i][1]);
