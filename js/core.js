@@ -8,6 +8,7 @@ var time = new function() {
 	
 	this.update = function(time) {
 		this.dtime = time - this.last_time;
+		this.dtime *= 2;
 		this.last_time = time;
 	}
 }();
@@ -17,7 +18,8 @@ var core = new function() {
 	this.loaded_map = -1;
 	this.game_state = 0;
 	this.health = 6;
-	this.coins = 1;
+	this.coins = 500;
+	this.reset = function(){};
 
 	//Buttons
 	this.img_start_game = new Image();
@@ -64,9 +66,10 @@ var core = new function() {
 				building.draw(core.registered_maps[core.loaded_map]);
 
 				if(core.health == 0 || core.health < 0) {
+					core.reset();
 					core.registered_maps[core.loaded_map].reset()
 					core.health = 6;
-					core.coins = 1;
+					core.coins = 500;
 					core.loaded_map = 0;
 					core.game_state = 1;
 				}

@@ -1,9 +1,14 @@
 var building = new function() {
 	this.entities = [];
+	this.events = [];
 	this.selected = 0;
 
 	this.register_entity = function(e, c) {
-		this.entities.push([e, c]);
+		this.entities.push([e, c, 0]);
+	};
+
+	this.register_event = function(entity, count, event) {
+		this.events.push([entity, count, event])
 	};
 
 	this.update = function(m) {
@@ -22,6 +27,14 @@ var building = new function() {
 			   m.get_entities_near_tile(p[0], p[1], 32).length == 0) {
 				m.spawn_entity(p[0], p[1], this.entities[this.selected][0]);
 				core.coins -= this.entities[this.selected][1];
+				this.entities[this.selected][2]++;
+
+				for(var i = 0; i < this.events.length; i++) {
+					if(this.events[i][0] == this.selected &&
+					   this.events[i][1] == this.entities[this.selected][2]) {
+						this.events[i][2](m);
+					}
+				}
 			}
 		}
 	};
@@ -41,6 +54,12 @@ var building = new function() {
 
 		if(this.selected > this.entities.length-2) {
 			this.selected = this.entities.length-1;
+		}
+	};
+
+	this.reset = function() {
+		for(var i = 0; i < this.entities.length; i++) {
+			this.entities[this.selected][2] = 0;
 		}
 	};
 }();

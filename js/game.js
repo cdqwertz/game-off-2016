@@ -1,5 +1,5 @@
 var my_tileset = new tileset();
-
+var level = 1;
 //my_tileset.register_tile(new tile(
 //	texture : string,
 //	update : function(map),
@@ -21,7 +21,23 @@ my_tileset.register_tile(new tile(
 	function(m,x,y) {
 		this.timer += time.dtime;
 		if(this.timer > 1000) {
-			m.spawn_entity(x,y, 0);
+			if(level == 1) {
+				if(Math.random() > 0.9) {
+					m.spawn_entity(x,y, 1);
+				} else {
+					m.spawn_entity(x,y, 0);
+				}
+			} else if(level == 2) {
+				m.spawn_entity(x,y, 1);
+			} else if(level == 3) {
+				m.spawn_entity(x,y, 2);
+			} else if(level == 4) {
+				m.spawn_entity(x,y, 3);
+			} else if(level == 5) {
+				m.spawn_entity(x,y, 4);
+			} else {
+				m.spawn_entity(x,y, 3);
+			}
 			this.timer = 0;
 		}
 	},
@@ -68,46 +84,49 @@ var enemy_start = function(m) {
 	this.destination = m.get_pos(m.path[0][0], m.path[0][1]);
 };
 
-var enemy_update = function(m) {
-	if(utils.distance(this.x, this.y, this.destination[0], this.destination[1]) < 4) {
-		this.i++;
-		if(this.i < m.path.length) {
-			if(m.path[this.i][0] > m.path[this.i-1][0]) {
-				this.rotation = -Math.PI/2; // 1
-			} else if(m.path[this.i][0] < m.path[this.i-1][0]) {
-				this.rotation = -Math.PI/2 * 3; // 3
-			} else if(m.path[this.i][1] > m.path[this.i-1][1]) {
-				this.rotation = 0; // 0
-			} else if(m.path[this.i][1] < m.path[this.i-1][1]) {
-				this.rotation = -Math.PI/2 * 2; // 2
+var enemy_update = function (coins) {
+	return (function(m) {
+		if(utils.distance(this.x, this.y, this.destination[0], this.destination[1]) < 4) {
+			this.i++;
+			if(this.i < m.path.length) {
+				if(m.path[this.i][0] > m.path[this.i-1][0]) {
+					this.rotation = -Math.PI/2; // 1
+				} else if(m.path[this.i][0] < m.path[this.i-1][0]) {
+					this.rotation = -Math.PI/2 * 3; // 3
+				} else if(m.path[this.i][1] > m.path[this.i-1][1]) {
+					this.rotation = 0; // 0
+				} else if(m.path[this.i][1] < m.path[this.i-1][1]) {
+					this.rotation = -Math.PI/2 * 2; // 2
+				}
+
+				this.destination = m.get_pos(m.path[this.i][0], m.path[this.i][1]);
+			} else {
+				core.health--;
+				m.remove_entity(this);
 			}
-
-			this.destination = m.get_pos(m.path[this.i][0], m.path[this.i][1]);
-		} else {
-			core.health--;
-			m.remove_entity(this);
+			this.timer = 0;
 		}
-		this.timer = 0;
-	}
 
-	{
-		var a = this.destination[0]-this.x;
-		var b = this.destination[1]-this.y;
+		{
+			var a = this.destination[0]-this.x;
+			var b = this.destination[1]-this.y;
 
-		var c = utils.distance(0,0,a,b);
+			var c = utils.distance(0,0,a,b);
 		
-		if((a != 0 || b != 0) && c != 0) {
-			this.x += (a/c)/10.0 * time.dtime;
-			this.y += (b/c)/10.0 * time.dtime;
+			if((a != 0 || b != 0) && c != 0) {
+				this.x += (a/c)/10.0 * time.dtime;
+				this.y += (b/c)/10.0 * time.dtime;
+			}
 		}
-	}
 
-	{
-		if(this.hp < 0 || this.hp == 0) {
-			core.coins += 2;
-			m.remove_entity(this);
+		{
+			if(this.hp < 0 || this.hp == 0) {
+				core.coins += coins;
+				console.log(core.coins);
+				m.remove_entity(this);
+			}
 		}
-	}
+	});
 };
 
 //entities.register_entity(new entities.entity_blueprint(
@@ -120,10 +139,42 @@ var enemy_update = function(m) {
 
 entities.register_entity(new entities.entity_blueprint(
 	"textures/entities/test",
-	1,
+	2,
 	0,
 	enemy_start,
-	enemy_update
+	enemy_update(20)
+));
+
+entities.register_entity(new entities.entity_blueprint(
+	"textures/entities/virus_2",
+	4,
+	0,
+	enemy_start,
+	enemy_update(30)
+));
+
+entities.register_entity(new entities.entity_blueprint(
+	"textures/entities/virus_3",
+	8,
+	0,
+	enemy_start,
+	enemy_update(45)
+));
+
+entities.register_entity(new entities.entity_blueprint(
+	"textures/entities/virus_4",
+	16,
+	0,
+	enemy_start,
+	enemy_update(55)
+));
+
+entities.register_entity(new entities.entity_blueprint(
+	"textures/entities/virus_5",
+	34,
+	0,
+	enemy_start,
+	enemy_update(70)
 ));
 
 entities.register_entity(new entities.entity_blueprint(
@@ -147,8 +198,86 @@ entities.register_entity(new entities.entity_blueprint(
 	}
 ));
 
+entities.register_entity(new entities.entity_blueprint(
+	"textures/entities/virus_defence_1",
+	1,
+	1,
+	function(m) {
+	},
+	function(m) {
+		this.timer += time.dtime;
+		if(this.timer > 500) {
+			var e = m.get_enemies_near(this.x, this.y, 64);
+			if(e.length) {
+				var dy = (e[0].y - this.y);
+				var dx = (e[0].x - this.x);
+				this.rotation = Math.atan(dy / dx) - Math.PI/2;
+				if(e[0].x > this.x) {
+					this.rotation += Math.PI;
+				}
+				e[0].hp -= 1;
+			}
+			this.timer = 0;
+		}
+	}
+));
+
+entities.register_entity(new entities.entity_blueprint(
+	"textures/entities/virus_defence_2",
+	1,
+	1,
+	function(m) {
+	},
+	function(m) {
+		this.timer += time.dtime;
+		if(this.timer > 500) {
+			var e = m.get_enemies_near(this.x, this.y, 64);
+			if(e.length) {
+				var dy = (e[0].y - this.y);
+				var dx = (e[0].x - this.x);
+				this.rotation = Math.atan(dy / dx) - Math.PI/2;
+				if(e[0].x > this.x) {
+					this.rotation += Math.PI;
+				}
+				e[0].hp -= 2;
+			}
+			this.timer = 0;
+		}
+	}
+));
+
 //building.register_entity(id : int, cost : int)
-building.register_entity(1, 1);
+building.register_entity(0+5, 100);
+building.register_entity(1+5, 400);
+building.register_entity(2+5, 1000);
+
+building.register_event(1, 2, function(m) {
+	if(level < 2) {
+		level = 2;
+	}
+})
+
+building.register_event(2, 1, function(m) {
+	if(level < 3) {
+		level = 3;
+	}
+})
+
+building.register_event(2, 2, function(m) {
+	if(level < 4) {
+		level = 4;
+	}
+})
+
+building.register_event(2, 4, function(m) {
+	if(level < 5) {
+		level = 5;
+	}
+})
+
+core.reset = function() {
+	level = 1;
+};
 
 //core.register_map(map : map);
 core.register_map(my_map);

@@ -88,7 +88,7 @@ function map(data, path, t, x, y, w, h) {
 	this.get_enemies_near = function(x, y, range) {
 		var e = []
 		for(var i = 0; i < this.entities.length; i++) {
-			if(utils.distance(x, y, this.entities[i].x, this.entities[i].y) < range && this.entities[i].type == 0) {
+			if(utils.distance(x, y, this.entities[i].x, this.entities[i].y) < range && entities.get_blueprint(this.entities[i].type).type == 0) {
 				e.push(this.entities[i])
 			}
 		}
