@@ -67,6 +67,7 @@ var core = new function() {
 
 				if(core.health == 0 || core.health < 0) {
 					core.reset();
+					building.reset();
 					core.registered_maps[core.loaded_map].reset()
 					core.health = 6;
 					core.coins = 500;

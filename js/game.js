@@ -81,7 +81,15 @@ var my_map = new map([
 
 var enemy_start = function(m) {
 	this.i = 0;
-	this.destination = m.get_pos(m.path[0][0], m.path[0][1]);
+	for(var i = 0; i < m.path.length; i++) {
+		var a = m.get_pos(m.path[i][0], m.path[i][1]);
+		var b = m.get_pos(m.path[this.i][0], m.path[this.i][1]);
+		if(utils.distance(this.x, this.y, a[0], a[1]) <
+		   utils.distance(this.x, this.y, b[0], b[1])) {
+			this.i = i;
+		}
+	}
+	this.destination = m.get_pos(m.path[this.i][0], m.path[this.i][1]);
 };
 
 var enemy_update = function (coins) {
