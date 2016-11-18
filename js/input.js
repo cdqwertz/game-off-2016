@@ -20,11 +20,16 @@ var input = new function() {
 	this.onwheel = function(e) {
 		building.onwheel(e);
 	};
+
+	this.onkeydown = function(e) {
+		core.onkeydown(e);
+	};
 }();
 
 window.onmousemove = input.onmousemove;
 window.onmousedown = input.onmousedown;
 window.onwheel = input.onwheel;
+window.onkeydown = input.onkeydown;
 
 var utils = new function() {
 	this.distance = function (a, b, c, d) {

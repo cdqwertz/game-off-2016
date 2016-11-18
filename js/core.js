@@ -5,10 +5,11 @@ var time = new function() {
 	this.last_time = 0;
 	this.time = 0;
 	this.dtime = 0;
+	this.time_scale = 2;
 	
 	this.update = function(time) {
 		this.dtime = time - this.last_time;
-		this.dtime *= 2;
+		this.dtime *= this.time_scale;
 		this.last_time = time;
 	}
 }();
@@ -20,6 +21,7 @@ var core = new function() {
 	this.health = 6;
 	this.coins = 500;
 	this.reset = function(){};
+	this.time_state = 1;
 
 	//Buttons
 	this.img_start_game = new Image();
@@ -80,5 +82,23 @@ var core = new function() {
 		}
 
 		window.requestAnimationFrame(core.update);
+	};
+
+	this.onkeydown = function(e) {
+		if(e.keyCode == 32) {
+			if(this.time_state == 1) {
+				time.time_scale = 1;
+				this.time_state = 0;
+			} else if(this.time_state == 0) {
+				time.time_scale = 2;
+				this.time_state = 1;
+			} 
+		} else if(e.keyCode == 81) {
+			building.change_selected(-1);
+		} else if(e.keyCode == 65) {
+			building.change_selected(1);
+		} else {
+			console.log(e.keyCode);
+		}
 	}
 }();

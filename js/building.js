@@ -16,8 +16,32 @@ var building = new function() {
 	};
 
 	this.draw = function(m) {
-		var img = entities.registered_entities[this.entities[this.selected][0]].img[0];
-		ctx.drawImage(img, input.mouseX + 5, input.mouseY + 10, m.w/2, m.h/2);
+		{
+			var img = entities.registered_entities[this.entities[this.selected][0]].img[0];
+			ctx.drawImage(img, input.mouseX + 5, input.mouseY + 10, m.w/2, m.h/2);
+		}
+		
+		ctx.fillStyle = "#404040";
+		ctx.fillRect(-(canvas.width/2), -(canvas.height/2), m.w/2 + 20, canvas.height);
+
+		for(var i = 0; i < this.entities.length; i++) {
+			var img = entities.registered_entities[this.entities[i][0]].img[0];
+			if(i == this.selected) {
+				ctx.strokeStyle = "#f0f0f0";
+				ctx.strokeRect(-(canvas.width/2) + 10, -(canvas.height/2) + i*(m.h/2 + 5) + 10, m.w/2, m.h/2);
+
+				ctx.fillStyle = "#dadada";
+				ctx.fillRect(-(canvas.width/2) + 10, -(canvas.height/2) + i*(m.h/2 + 5) + 10, m.w/2, m.h/2);
+			}
+
+	
+			if(core.coins > this.entities[i][1] - 1) {
+				ctx.fillStyle = "#99cc99";
+				ctx.fillRect(-(canvas.width/2), -(canvas.height/2) + i*(m.h/2 + 5), 3, m.h/2 + 10);
+			}
+
+			ctx.drawImage(img, -(canvas.width/2) + 10, -(canvas.height/2) + i*(m.h/2 + 5) + 10, m.w/2, m.h/2);
+		}
 	};
 
 	this.onmousedown = function(e, m) {
@@ -47,6 +71,18 @@ var building = new function() {
 		}
 
 		this.selected += dir;
+
+		if(this.selected < 0) {
+			this.selected = 0;
+		}
+
+		if(this.selected > this.entities.length-2) {
+			this.selected = this.entities.length-1;
+		}
+	};
+
+	this.change_selected = function(x) {
+		this.selected += x;
 
 		if(this.selected < 0) {
 			this.selected = 0;
