@@ -34,5 +34,5 @@ window.onkeydown = input.onkeydown;
 var utils = new function() {
 	this.distance = function (a, b, c, d) {
 		return(Math.pow(Math.pow(a-c, 2) + Math.pow(b-d, 2), 0.5));
-	}
+	};
 }

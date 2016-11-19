@@ -44,6 +44,11 @@ var core = new function() {
 
 		ctx.translate(window.innerWidth/2, window.innerHeight/2);
 
+		ctx.imageSmoothingEnabled = false;
+		ctx.mozImageSmoothingEnabled = false;
+		ctx.webkitImageSmoothingEnabled = false;
+		ctx.msImageSmoothingEnabled = false;
+
 		window.requestAnimationFrame(core.update);
 	};
 
@@ -93,9 +98,9 @@ var core = new function() {
 				time.time_scale = 2;
 				this.time_state = 1;
 			} 
-		} else if(e.keyCode == 81) {
+		} else if(e.keyCode == 87) {
 			building.change_selected(-1);
-		} else if(e.keyCode == 65) {
+		} else if(e.keyCode == 83) {
 			building.change_selected(1);
 		} else {
 			console.log(e.keyCode);
