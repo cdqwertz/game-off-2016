@@ -189,7 +189,7 @@ entities.register_entity(new entities.entity_blueprint(
 
 entities.register_entity(new entities.entity_blueprint(
 	"textures/entities/virus_6",
-	64,
+	48,
 	0,
 	enemy_start,
 	enemy_update(80)
@@ -227,13 +227,20 @@ entities.register_entity(new entities.entity_blueprint(
 		if(this.timer > 500) {
 			var e = m.get_enemies_near(this.x, this.y, 64);
 			if(e.length) {
-				var dy = (e[0].y - this.y);
-				var dx = (e[0].x - this.x);
+				var a = 0;
+				for(var i = 0; i < e.length; i++) {
+					if(e[i].hp < e[a].hp) {
+						a = i;
+					}
+				}
+
+				var dy = (e[a].y - this.y);
+				var dx = (e[a].x - this.x);
 				this.rotation = Math.atan(dy / dx) - Math.PI/2;
-				if(e[0].x > this.x) {
+				if(e[a].x > this.x) {
 					this.rotation += Math.PI;
 				}
-				e[0].hp -= 1;
+				e[a].hp -= 1;
 			}
 			this.timer = 0;
 		}
@@ -249,15 +256,22 @@ entities.register_entity(new entities.entity_blueprint(
 	function(m) {
 		this.timer += time.dtime;
 		if(this.timer > 500) {
-			var e = m.get_enemies_near(this.x, this.y, 64);
+			var e = m.get_enemies_near(this.x, this.y, 64+16);
 			if(e.length) {
-				var dy = (e[0].y - this.y);
-				var dx = (e[0].x - this.x);
+				var a = 0;
+				for(var i = 0; i < e.length; i++) {
+					if(e[i].hp < e[a].hp) {
+						a = i;
+					}
+				}
+
+				var dy = (e[a].y - this.y);
+				var dx = (e[a].x - this.x);
 				this.rotation = Math.atan(dy / dx) - Math.PI/2;
-				if(e[0].x > this.x) {
+				if(e[a].x > this.x) {
 					this.rotation += Math.PI;
 				}
-				e[0].hp -= 2;
+				e[a].hp -= 2;
 			}
 			this.timer = 0;
 		}
@@ -266,20 +280,24 @@ entities.register_entity(new entities.entity_blueprint(
 
 entities.register_entity(new entities.entity_blueprint(
 	"textures/entities/scanner",
-	1,
+	40,
 	3,
 	function(m) {
 	},
 	function(m) {
-		//TODO
 		this.timer += time.dtime;
+
 		if(this.timer > 100) {
 			var e = m.get_enemies_near(this.x, this.y, 32);
 			if(e.length) {
 				for(var i = 0; i < e.length; i++) {
-					e[i].hp -= 1;
+					e[i].x = m.get_pos(m.path[e[i].i-1][0], m.path[e[i].i-1][1])[0];
+					e[i].y = m.get_pos(m.path[e[i].i-1][0], m.path[e[i].i-1][1])[1];
+					this.hp--;
 				}
-				m.remove_entity(this);
+				if(this.hp < 0 || this.hp == 0) {
+					m.remove_entity(this);
+				}
 			}
 			this.timer = 0;
 		}
@@ -292,7 +310,7 @@ var enemy_count = 6;
 building.register_entity(0+enemy_count, 100);
 building.register_entity(1+enemy_count, 400);
 building.register_entity(2+enemy_count, 1000);
-building.register_entity(3+enemy_count, 0);
+building.register_entity(3+enemy_count, 1500);
 
 building.register_event(1, 2, function(m) {
 	if(level < 2) {
@@ -318,7 +336,7 @@ building.register_event(2, 4, function(m) {
 	}
 })
 
-building.register_event(2, 6, function(m) {
+building.register_event(3, 1, function(m) {
 	if(level < 6) {
 		level = 6;
 	}
