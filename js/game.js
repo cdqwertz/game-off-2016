@@ -1,5 +1,5 @@
 var my_tileset = new tileset();
-var level = 1;
+var level = 0;
 //my_tileset.register_tile(new tile(
 //	texture : string,
 //	update : function(map),
@@ -21,7 +21,7 @@ my_tileset.register_tile(new tile(
 	function(m,x,y) {
 		this.timer += time.dtime;
 		if(this.timer > 1000) {
-			if(level == 1) {
+			if(level == 1 || level == 0) {
 				if(Math.random() > 0.9) {
 					m.spawn_entity(x,y, 1);
 				} else {
@@ -58,6 +58,8 @@ my_tileset.register_tile(new tile(
 //	w : int, h : int
 //);
 
+//map 1
+
 var my_map = new map([
 	[2, 1, 1, 1, 1, 1, 1, 1],
 	[0, 0, 0, 0, 0, 0, 0, 1],
@@ -80,6 +82,26 @@ var my_map = new map([
 	[0,8],
 	[7,8]
 ], my_tileset, 64, 12*4, 64, 64);
+
+//map 2
+
+var map_2 = new map([
+	[2, 0, 0, 0, 0, 0, 0, 3],
+	[1, 0, 0, 0, 0, 0, 0, 1],
+	[1, 0, 0, 0, 0, 0, 0, 1],
+	[1, 0, 0, 0, 0, 0, 0, 1],
+	[1, 0, 0, 0, 0, 0, 0, 1],
+	[1, 0, 0, 0, 0, 0, 0, 1],
+	[1, 0, 0, 0, 0, 0, 0, 1],
+	[1, 0, 0, 0, 0, 0, 0, 1],
+	[1, 1, 1, 1, 1, 1, 1, 1]
+], [
+	[0, 0],
+	[0, 8],
+	[7, 8],
+	[7, 0]
+], my_tileset, 64, 12*4, 64, 64);
+
 
 var enemy_start = function(m) {
 	this.i = 0;
@@ -225,7 +247,7 @@ entities.register_entity(new entities.entity_blueprint(
 	function(m) {
 		this.timer += time.dtime;
 		if(this.timer > 500) {
-			var e = m.get_enemies_near(this.x, this.y, 64);
+			var e = m.get_enemies_near(this.x, this.y, 64+16);
 			if(e.length) {
 				var a = 0;
 				for(var i = 0; i < e.length; i++) {
@@ -256,7 +278,7 @@ entities.register_entity(new entities.entity_blueprint(
 	function(m) {
 		this.timer += time.dtime;
 		if(this.timer > 500) {
-			var e = m.get_enemies_near(this.x, this.y, 64+16);
+			var e = m.get_enemies_near(this.x, this.y, 64+32);
 			if(e.length) {
 				var a = 0;
 				for(var i = 0; i < e.length; i++) {
@@ -312,6 +334,13 @@ building.register_entity(1+enemy_count, 400);
 building.register_entity(2+enemy_count, 1000);
 building.register_entity(3+enemy_count, 1500);
 
+building.register_event(1, 1, function(m) {
+	if(level < 1) {
+		time.time_scale = 2;
+		level = 1;
+	}
+})
+
 building.register_event(1, 2, function(m) {
 	if(level < 2) {
 		level = 2;
@@ -343,9 +372,11 @@ building.register_event(3, 1, function(m) {
 })
 
 core.reset = function() {
-	level = 1;
+	level = 0;
+	time.time_scale = 0.5;
 };
 
 //core.register_map(map : map);
 core.register_map(my_map);
-core.loaded_map = 0;
+core.register_map(map_2);
+core.loaded_map = 1;

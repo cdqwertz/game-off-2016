@@ -42,6 +42,9 @@ var building = new function() {
 
 			ctx.drawImage(img, -(canvas.width/2) + 10, -(canvas.height/2) + i*(m.h/2 + 5) + 10, m.w/2, m.h/2);
 		}
+		
+		ctx.fillStyle = "#a04040";
+		ctx.fillRect(-(canvas.width/2), (canvas.height/2)-(core.health*25), (m.w/2 + 20), core.health*25);
 	};
 
 	this.onmousedown = function(e, m) {
@@ -95,7 +98,7 @@ var building = new function() {
 
 	this.reset = function() {
 		for(var i = 0; i < this.entities.length; i++) {
-			this.entities[this.selected][2] = 0;
+			this.entities[i][2] = 0;
 		}
 	};
 }();
