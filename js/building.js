@@ -44,7 +44,9 @@ var building = new function() {
 		}
 		
 		ctx.fillStyle = "#a04040";
-		ctx.fillRect(-(canvas.width/2), (canvas.height/2)-(core.health*25), (m.w/2 + 20), core.health*25);
+		ctx.fillRect(-(canvas.width/2), (canvas.height/2)-(core.health*25), (m.w/2 + 20)/2, core.health*25);
+		ctx.fillStyle = "#40a040";
+		ctx.fillRect(-(canvas.width/2) + (m.w/2 + 20)/2, (canvas.height/2)-((core.timer)/(core.timer_max) * 25 * 6), (m.w/2 + 20)/2, (core.timer)/(core.timer_max) * 25 * 6);
 	};
 
 	this.onmousedown = function(e, m) {

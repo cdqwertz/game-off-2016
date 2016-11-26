@@ -32,7 +32,7 @@ function map(data, path, t, x, y, w, h) {
 		}
 
 		for(var i = 0; i < this.entities.length; i++) {
-			this.entities[i].draw();
+			this.entities[i].draw(this);
 		}
 	};
 

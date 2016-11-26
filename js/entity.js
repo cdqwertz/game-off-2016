@@ -10,7 +10,7 @@ var entities = new function() {
 	}
 
 	//classes
-	this.entity_blueprint = function (texture, hp, type, start, behaviour) {
+	this.entity_blueprint = function (texture, hp, type, start, behaviour, draw) {
 		this.img = [];
 		this.img.push(new Image());
 		this.img[0].src = texture + ".png";
@@ -19,6 +19,16 @@ var entities = new function() {
 		this.type = type;
 		this.start = start;
 		this.behaviour = behaviour;
+		this.draw = draw || function(m) {
+			var w = this.img[this.img_id].width;
+			var h = this.img[this.img_id].height;
+
+			ctx.translate(this.x + w/2, this.y-2*4 + h/2);
+			ctx.rotate(this.rotation);
+			ctx.drawImage(this.img[this.img_id], -w/2, -h/2);
+			ctx.rotate(-this.rotation);
+			ctx.translate(-(this.x + w/2), -(this.y-2*4 + h/2));
+		};
 	}
 
 	this.entity = function (x, y, type) {
@@ -35,16 +45,7 @@ var entities = new function() {
 		this.start = entities.get_blueprint(type).start;
 		this.update = entities.get_blueprint(type).behaviour;
 
-		this.draw = function() {
-			var w = this.img[this.img_id].width;
-			var h = this.img[this.img_id].height;
-
-			ctx.translate(this.x + w/2, this.y-2*4 + h/2);
-			ctx.rotate(this.rotation);
-			ctx.drawImage(this.img[this.img_id], -w/2, -h/2);
-			ctx.rotate(-this.rotation);
-			ctx.translate(-(this.x + w/2), -(this.y-2*4 + h/2));
-		}
+		this.draw = entities.get_blueprint(type).draw;
 	}
 
 	//

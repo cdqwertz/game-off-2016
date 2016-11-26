@@ -238,11 +238,31 @@ entities.register_entity(new entities.entity_blueprint(
 	}
 ));
 
+//
+
+var defence_draw = function(m) {
+	var w = this.img[this.img_id].width;
+	var h = this.img[this.img_id].height;
+
+	ctx.translate(this.x + w/2, this.y-2*4 + h/2);
+	ctx.rotate(this.rotation);
+	ctx.drawImage(this.img[this.img_id], -w/2, -h/2);
+	ctx.rotate(-this.rotation);
+	
+	ctx.fillStyle = "#40a040";
+	var xp_max = 50 * this.level;
+	ctx.fillRect(-((m.w-10)/2), -m.h/2, this.xp/xp_max * (m.w-20), 5);
+	
+	ctx.translate(-(this.x + w/2), -(this.y-2*4 + h/2));
+}
+
 entities.register_entity(new entities.entity_blueprint(
 	"textures/entities/virus_defence_1",
 	1,
 	1,
 	function(m) {
+		this.xp = 0;
+		this.level = 1;
 	},
 	function(m) {
 		this.timer += time.dtime;
@@ -262,11 +282,23 @@ entities.register_entity(new entities.entity_blueprint(
 				if(e[a].x > this.x) {
 					this.rotation += Math.PI;
 				}
-				e[a].hp -= 1;
+				
+				if(this.level > 1) {
+					e[a].hp -= 2;
+				} else {
+					e[a].hp -= 1;
+				}
+				
+				this.xp++;
+				if(this.xp > 50 * this.level) {
+					this.xp = 0;
+					this.level++;
+				}
 			}
 			this.timer = 0;
 		}
-	}
+	},
+	defence_draw
 ));
 
 entities.register_entity(new entities.entity_blueprint(
@@ -274,6 +306,8 @@ entities.register_entity(new entities.entity_blueprint(
 	1,
 	1,
 	function(m) {
+		this.xp = 0;
+		this.level = 1;
 	},
 	function(m) {
 		this.timer += time.dtime;
@@ -293,11 +327,26 @@ entities.register_entity(new entities.entity_blueprint(
 				if(e[a].x > this.x) {
 					this.rotation += Math.PI;
 				}
-				e[a].hp -= 2;
+				
+				
+				if(this.level > 2) {
+					e[a].hp -= 4;
+				} else if(this.level > 1) {
+					e[a].hp -= 3;
+				} else {
+					e[a].hp -= 2;
+				}
+				
+				this.xp++;
+				if(this.xp > 50 * this.level) {
+					this.xp = 0;
+					this.level++;
+				}
 			}
 			this.timer = 0;
 		}
-	}
+	},
+	defence_draw
 ));
 
 entities.register_entity(new entities.entity_blueprint(
@@ -337,6 +386,7 @@ building.register_entity(3+enemy_count, 1500);
 building.register_event(1, 1, function(m) {
 	if(level < 1) {
 		time.time_scale = 2;
+		core.reset_timer(50);
 		level = 1;
 	}
 })
@@ -344,30 +394,35 @@ building.register_event(1, 1, function(m) {
 building.register_event(1, 2, function(m) {
 	if(level < 2) {
 		level = 2;
+		core.reset_timer(80);
 	}
 })
 
 building.register_event(2, 1, function(m) {
 	if(level < 3) {
 		level = 3;
+		core.reset_timer(80);
 	}
 })
 
 building.register_event(2, 2, function(m) {
 	if(level < 4) {
 		level = 4;
+		core.reset_timer(80);
 	}
 })
 
 building.register_event(2, 4, function(m) {
 	if(level < 5) {
 		level = 5;
+		core.reset_timer(50);
 	}
 })
 
 building.register_event(3, 1, function(m) {
 	if(level < 6) {
 		level = 6;
+		core.reset_timer(1000);
 	}
 })
 

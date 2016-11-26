@@ -22,6 +22,8 @@ var core = new function() {
 	this.coins = 500;
 	this.reset = function(){};
 	this.time_state = 1;
+	this.timer = 1000 * 60;
+	this.timer_max = 1000 * 60;
 
 	//Buttons
 	this.img_start_game = new Image();
@@ -33,6 +35,11 @@ var core = new function() {
 
 	this.get_map = function() {
 		return this.registered_maps[this.loaded_map];
+	};
+	
+	this.reset_timer = function(s) {
+		this.timer_max =  1000 * (s || 60);
+		this.timer = 1000 * (s || 60);
 	};
 
 	this.load = function () {
@@ -66,8 +73,16 @@ var core = new function() {
 		} else if(core.game_state == 2) {
 			//Game
 			if(core.loaded_map != -1) {
+				core.timer -= time.dtime;
+				
 				core.registered_maps[core.loaded_map].update();
 				building.update(core.registered_maps[core.loaded_map]);
+				
+				if(core.timer < 0) {
+					core.health--;
+					core.reset_timer();
+				}
+				
 				ctx.clearRect(-canvas.width/2, -canvas.height/2, canvas.width, canvas.height);
 				core.registered_maps[core.loaded_map].draw();
 				building.draw(core.registered_maps[core.loaded_map]);
@@ -75,6 +90,7 @@ var core = new function() {
 				if(core.health == 0 || core.health < 0) {
 					core.reset();
 					building.reset();
+					core.reset_timer();
 					core.registered_maps[core.loaded_map].reset()
 					core.health = 6;
 					core.coins = 500;
