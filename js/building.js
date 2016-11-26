@@ -18,7 +18,11 @@ var building = new function() {
 	this.draw = function(m) {
 		{
 			var img = entities.registered_entities[this.entities[this.selected][0]].img[0];
-			ctx.drawImage(img, input.mouseX + 5, input.mouseY + 10, m.w/2, m.h/2);
+			if(core.coins > this.entities[this.selected][1] - 1) {
+				ctx.drawImage(img, input.mouseX + 5, input.mouseY + 10, m.w/2, m.h/2);
+			} else {
+				ctx.drawImage(img, input.mouseX + 5, input.mouseY + 10, m.w/3, m.h/3);
+			}
 		}
 		
 		ctx.fillStyle = "#404040";
@@ -50,18 +54,26 @@ var building = new function() {
 	};
 
 	this.onmousedown = function(e, m) {
-		if(core.coins > this.entities[this.selected][1] - 1) {
-			var p = m.convert_pos(input.mouseX - m.w/2, input.mouseY - m.h/2);
-			if(m.tileset.tiles[m.map[p[1]][p[0]]].allow_build[entities.registered_entities[this.entities[this.selected][0]].type] == true &&
-			   m.get_entities_near_tile(p[0], p[1], 32).length == 0) {
-				m.spawn_entity(p[0], p[1], this.entities[this.selected][0]);
-				core.coins -= this.entities[this.selected][1];
-				this.entities[this.selected][2]++;
+		if(utils.is_inside(input.mouseX, input.mouseY, -(canvas.width/2), -(canvas.height/2), m.w/2 + 20, canvas.height)) {
+			for(var i = 0; i < this.entities.length; i++) {
+				if(utils.is_inside(input.mouseX, input.mouseY, -(canvas.width/2) + 10, -(canvas.height/2) + i*(m.h/2 + 5) + 10, m.w/2, m.h/2)) {
+					this.selected = i;
+				}
+			}
+		} else {
+			if(core.coins > this.entities[this.selected][1] - 1) {
+				var p = m.convert_pos(input.mouseX - m.w/2, input.mouseY - m.h/2);
+				if(m.tileset.tiles[m.map[p[1]][p[0]]].allow_build[entities.registered_entities[this.entities[this.selected][0]].type] == true &&
+				   m.get_entities_near_tile(p[0], p[1], 32).length == 0) {
+					m.spawn_entity(p[0], p[1], this.entities[this.selected][0]);
+					core.coins -= this.entities[this.selected][1];
+					this.entities[this.selected][2]++;
 
-				for(var i = 0; i < this.events.length; i++) {
-					if(this.events[i][0] == this.selected &&
-					   this.events[i][1] == this.entities[this.selected][2]) {
-						this.events[i][2](m);
+					for(var i = 0; i < this.events.length; i++) {
+						if(this.events[i][0] == this.selected &&
+						   this.events[i][1] == this.entities[this.selected][2]) {
+							this.events[i][2](m);
+						}
 					}
 				}
 			}

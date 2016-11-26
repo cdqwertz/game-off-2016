@@ -37,6 +37,7 @@ var entities = new function() {
 		this.type = type;
 		this.img = entities.get_blueprint(type).img;
 		this.hp = entities.get_blueprint(type).hp;
+		this.hp_max = entities.get_blueprint(type).hp;
 		this.img_id = 0;
 		this.timer = 0;
 		this.r = 0;

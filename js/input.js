@@ -36,4 +36,15 @@ var utils = new function() {
 	this.distance = function (a, b, c, d) {
 		return(Math.pow(Math.pow(a-c, 2) + Math.pow(b-d, 2), 0.5));
 	};
+	
+	this.is_inside = function(x, y, a, b, c, d) {
+		if(x > a &&
+		   y > b &&
+		   x < a+c &&
+		   y < b+d) {
+			return true;
+		} else {
+			return false;
+		}
+	};
 }

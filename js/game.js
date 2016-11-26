@@ -161,6 +161,23 @@ var enemy_update = function (coins) {
 	});
 };
 
+var enemy_draw = function(m) {
+	var w = this.img[this.img_id].width;
+	var h = this.img[this.img_id].height;
+
+	ctx.translate(this.x + w/2, this.y-2*4 + h/2);
+	ctx.rotate(this.rotation);
+	ctx.drawImage(this.img[this.img_id], -w/2, -h/2);
+	ctx.rotate(-this.rotation);
+	
+	if(utils.distance(input.mouseX , input.mouseY, this.x + w/2, this.y + h/2) < 300) {
+		ctx.fillStyle = "#a04040";
+		ctx.fillRect(-((m.w-10)/2), -m.h/2, this.hp/this.hp_max * (m.w-20), 5);
+	}
+	
+	ctx.translate(-(this.x + w/2), -(this.y-2*4 + h/2));
+};
+
 //entities.register_entity(new entities.entity_blueprint(
 //	texture : string,
 //	hp : int,
@@ -174,7 +191,8 @@ entities.register_entity(new entities.entity_blueprint(
 	2,
 	0,
 	enemy_start,
-	enemy_update(20)
+	enemy_update(20),
+	enemy_draw
 ));
 
 entities.register_entity(new entities.entity_blueprint(
@@ -182,7 +200,8 @@ entities.register_entity(new entities.entity_blueprint(
 	4,
 	0,
 	enemy_start,
-	enemy_update(30)
+	enemy_update(30),
+	enemy_draw
 ));
 
 entities.register_entity(new entities.entity_blueprint(
@@ -190,7 +209,8 @@ entities.register_entity(new entities.entity_blueprint(
 	8,
 	0,
 	enemy_start,
-	enemy_update(45)
+	enemy_update(45),
+	enemy_draw
 ));
 
 entities.register_entity(new entities.entity_blueprint(
@@ -198,7 +218,8 @@ entities.register_entity(new entities.entity_blueprint(
 	16,
 	0,
 	enemy_start,
-	enemy_update(55)
+	enemy_update(55),
+	enemy_draw
 ));
 
 entities.register_entity(new entities.entity_blueprint(
@@ -206,7 +227,8 @@ entities.register_entity(new entities.entity_blueprint(
 	34,
 	0,
 	enemy_start,
-	enemy_update(70)
+	enemy_update(70),
+	enemy_draw
 ));
 
 entities.register_entity(new entities.entity_blueprint(
@@ -214,8 +236,11 @@ entities.register_entity(new entities.entity_blueprint(
 	48,
 	0,
 	enemy_start,
-	enemy_update(80)
+	enemy_update(80),
+	enemy_draw
 ));
+
+//
 
 entities.register_entity(new entities.entity_blueprint(
 	"textures/entities/trap",
@@ -249,12 +274,14 @@ var defence_draw = function(m) {
 	ctx.drawImage(this.img[this.img_id], -w/2, -h/2);
 	ctx.rotate(-this.rotation);
 	
-	ctx.fillStyle = "#40a040";
-	var xp_max = 50 * this.level;
-	ctx.fillRect(-((m.w-10)/2), -m.h/2, this.xp/xp_max * (m.w-20), 5);
+	if(utils.distance(input.mouseX , input.mouseY, this.x + w/2, this.y + h/2) < 100) {
+		ctx.fillStyle = "#40a040";
+		var xp_max = 50 * this.level;
+		ctx.fillRect(-((m.w-10)/2), -m.h/2, this.xp/xp_max * (m.w-20), 5);
+	}
 	
 	ctx.translate(-(this.x + w/2), -(this.y-2*4 + h/2));
-}
+};
 
 entities.register_entity(new entities.entity_blueprint(
 	"textures/entities/virus_defence_1",
