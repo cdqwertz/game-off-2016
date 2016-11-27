@@ -9,7 +9,7 @@ var input = new function() {
 
 	this.onmousedown = function(e) {
 		if(core.game_state == 0) {
-			core.game_state = 2;
+			core.game_state = 1;
 			core.reset();
 		} else if (core.game_state == 1) {
 			

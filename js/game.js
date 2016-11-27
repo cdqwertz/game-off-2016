@@ -102,6 +102,47 @@ var map_2 = new map([
 	[7, 0]
 ], my_tileset, 64, 12*4, 64, 64);
 
+//map 3
+
+var map_3 = new map([
+	[0, 0, 0, 0, 0, 0, 0],
+	[0, 2, 1, 1, 1, 1, 0],
+	[0, 3, 0, 0, 0, 1, 0],
+	[0, 1, 0, 0, 0, 1, 0],
+	[0, 1, 0, 0, 0, 1, 0],
+	[0, 1, 1, 1, 1, 1, 0],
+	[0, 0, 0, 0, 0, 0, 0]
+], [
+	[1, 1],
+	[5, 1],
+	[5, 5],
+	[1, 5],
+	[1, 2]
+], my_tileset, 64, 12*4, 64, 64);
+
+
+//map 4
+
+var map_4 = new map([
+	[0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 2, 1, 1, 1, 1, 1, 3, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0],
+], [
+	[1, 1],
+	[7, 1],
+], my_tileset, 64, 12*4, 64, 64);
+
+//map 5
+
+var map_5 = new map([
+	[0, 0, 0, 0, 0, 0, 0],
+	[0, 2, 1, 1, 1, 3, 0],
+	[0, 0, 0, 0, 0, 0, 0],
+], [
+	[1, 1],
+	[5, 1],
+], my_tileset, 64, 12*4, 64, 64);
+
 
 var enemy_start = function(m) {
 	this.i = 0;
@@ -154,7 +195,6 @@ var enemy_update = function (coins) {
 		{
 			if(this.hp < 0 || this.hp == 0) {
 				core.coins += coins;
-				console.log(core.coins);
 				m.remove_entity(this);
 			}
 		}
@@ -378,7 +418,7 @@ entities.register_entity(new entities.entity_blueprint(
 
 entities.register_entity(new entities.entity_blueprint(
 	"textures/entities/scanner",
-	40,
+	20,
 	3,
 	function(m) {
 	},
@@ -449,7 +489,7 @@ building.register_event(2, 4, function(m) {
 building.register_event(3, 1, function(m) {
 	if(level < 6) {
 		level = 6;
-		core.reset_timer(1000);
+		core.reset_timer(40);
 	}
 })
 
@@ -458,7 +498,32 @@ core.reset = function() {
 	time.time_scale = 0.5;
 };
 
+core.on_timer = function() {
+	if(core.game_state == 2) {
+		if(level == 6) {
+			core.reset();
+			building.reset();
+			core.registered_maps[core.loaded_map].reset()
+			core.health = 6;
+			core.coins = 500;
+			core.loaded_map = 0;
+			
+			core.reset_timer(3);
+			core.game_state = 3;
+		} else {
+			core.health--;
+			core.reset_timer();
+		}
+	} else if(core.game_state == 3) {
+		core.reset_timer();
+		core.game_state = 1;
+	}
+};
+
 //core.register_map(map : map);
 core.register_map(my_map);
 core.register_map(map_2);
-core.loaded_map = 1;
+core.register_map(map_3);
+core.register_map(map_4);
+core.register_map(map_5);
+core.loaded_map = 0;
