@@ -454,6 +454,7 @@ building.register_event(1, 1, function(m) {
 	if(level < 1) {
 		time.time_scale = 2;
 		core.reset_timer(50);
+		core.infotext = "PRESS \"SPACE\" TO SPEED UP OR SLOW DOWN";
 		level = 1;
 	}
 })
@@ -462,6 +463,7 @@ building.register_event(1, 2, function(m) {
 	if(level < 2) {
 		level = 2;
 		core.reset_timer(80);
+		core.infotext = "GREAT!";
 	}
 })
 
@@ -496,6 +498,7 @@ building.register_event(3, 1, function(m) {
 core.reset = function() {
 	level = 0;
 	time.time_scale = 0.5;
+	core.infotext = "PRESS \"W\" OR \"S\" TO SELECT AN ITEM AND PLACE IT!";
 };
 
 core.on_timer = function() {

@@ -36,6 +36,7 @@ var core = new function() {
 			core.reset_timer();
 		}
 	};
+	this.infotext = "";
 
 	//Buttons
 	this.img_start_game = new Image();
@@ -114,7 +115,8 @@ var core = new function() {
 				building.draw(core.registered_maps[core.loaded_map]);
 				
 				core.font_1.draw("" + core.coins, canvas.width/2 - core.font_1.get_width("" + core.coins) - 10, -canvas.height/2 + 10);
-
+				core.font_2.draw(core.infotext, canvas.width/2 - core.font_2.get_width(core.infotext) - 10, canvas.height/2 - 31);				
+				
 				if(core.health == 0 || core.health < 0) {
 					core.reset();
 					building.reset();
@@ -137,6 +139,19 @@ var core = new function() {
 		}
 
 		window.requestAnimationFrame(core.update);
+	};
+	
+	this.onmousedown = function(e) {
+		if(this.game_state == 1) {
+			core.reset();
+			building.reset();
+			core.reset_timer();
+			core.registered_maps[core.loaded_map].reset()
+			core.health = 6;
+			core.coins = 500;
+	
+			this.game_state = 2;
+		}
 	};
 
 	this.onkeydown = function(e) {

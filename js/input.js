@@ -12,7 +12,7 @@ var input = new function() {
 			core.game_state = 1;
 			core.reset();
 		} else if (core.game_state == 1) {
-			
+			core.onmousedown(e)
 		} else {
 			building.onmousedown(e, core.get_map());
 		}
