@@ -135,16 +135,25 @@ var map_4 = new map([
 //map 5
 
 var map_5 = new map([
-	[0, 0, 0, 0, 0, 0, 0],
-	[0, 2, 1, 1, 1, 3, 0],
-	[0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 2, 1, 1, 1, 1, 1, 1, 0],
+	[0, 1, 1, 1, 1, 1, 1, 1, 0],
+	[0, 1, 1, 1, 1, 1, 1, 1, 0],
+	[0, 1, 1, 1, 1, 1, 1, 1, 0],
+	[0, 1, 1, 1, 1, 1, 1, 1, 0],
+	[0, 1, 1, 1, 1, 1, 1, 1, 0],
+	[0, 3, 1, 1, 1, 1, 1, 1, 0],
+	[0, 0, 0, 0, 0, 0, 0, 0, 0]
 ], [
 	[1, 1],
-	[5, 1],
+	[7, 1],
+	[7, 7],
+	[1, 7],
 ], my_tileset, 64, 12*4, 64, 64);
 
 
 var enemy_start = function(m) {
+	this.speed = 1;
 	this.i = 0;
 	for(var i = 0; i < m.path.length; i++) {
 		var a = m.get_pos(m.path[i][0], m.path[i][1]);
@@ -187,8 +196,8 @@ var enemy_update = function (coins) {
 			var c = utils.distance(0,0,a,b);
 		
 			if((a != 0 || b != 0) && c != 0) {
-				this.x += (a/c)/10.0 * time.dtime;
-				this.y += (b/c)/10.0 * time.dtime;
+				this.x += (a/c)/10.0 * time.dtime * this.speed;
+				this.y += (b/c)/10.0 * time.dtime * this.speed;
 			}
 		}
 
@@ -284,19 +293,26 @@ entities.register_entity(new entities.entity_blueprint(
 
 entities.register_entity(new entities.entity_blueprint(
 	"textures/entities/trap",
-	1,
+	10,
 	3,
 	function(m) {
 	},
 	function(m) {
 		this.timer += time.dtime;
-		if(this.timer > 100) {
+
+		if(this.timer > 200) {
 			var e = m.get_enemies_near(this.x, this.y, 32);
 			if(e.length) {
 				for(var i = 0; i < e.length; i++) {
-					e[i].hp -= 1;
+					if(e[i].speed > 0.8) {
+						e[i].speed -= 0.1;
+						e[i].hp--;
+					}
+					this.hp--;
 				}
-				m.remove_entity(this);
+				if(this.hp < 0 || this.hp == 0) {
+					m.remove_entity(this);
+				}
 			}
 			this.timer = 0;
 		}
@@ -310,6 +326,7 @@ var defence_draw = function(m) {
 	var h = this.img[this.img_id].height;
 
 	ctx.translate(this.x + w/2, this.y-2*4 + h/2);
+	
 	ctx.rotate(this.rotation);
 	ctx.drawImage(this.img[this.img_id], -w/2, -h/2);
 	ctx.rotate(-this.rotation);
@@ -333,6 +350,7 @@ entities.register_entity(new entities.entity_blueprint(
 	},
 	function(m) {
 		this.timer += time.dtime;
+		
 		if(this.timer > 500) {
 			var e = m.get_enemies_near(this.x, this.y, 64+16);
 			if(e.length) {
@@ -355,6 +373,7 @@ entities.register_entity(new entities.entity_blueprint(
 				} else {
 					e[a].hp -= 1;
 				}
+				
 				
 				this.xp++;
 				if(this.xp > 50 * this.level) {
@@ -445,12 +464,12 @@ entities.register_entity(new entities.entity_blueprint(
 //building.register_entity(id : int, cost : int)
 var enemy_count = 6;
 
-building.register_entity(0+enemy_count, 100);
 building.register_entity(1+enemy_count, 400);
+building.register_entity(0+enemy_count, 200);
 building.register_entity(2+enemy_count, 1000);
 building.register_entity(3+enemy_count, 1500);
 
-building.register_event(1, 1, function(m) {
+building.register_event(0, 1, function(m) {
 	if(level < 1) {
 		time.time_scale = 2;
 		core.reset_timer(50);
@@ -459,7 +478,7 @@ building.register_event(1, 1, function(m) {
 	}
 })
 
-building.register_event(1, 2, function(m) {
+building.register_event(0, 2, function(m) {
 	if(level < 2) {
 		level = 2;
 		core.reset_timer(80);
