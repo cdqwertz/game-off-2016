@@ -151,6 +151,26 @@ var map_5 = new map([
 	[1, 7],
 ], my_tileset, 64, 12*4, 64, 64);
 
+//map 6
+
+var map_6 = new map([
+	[2, 1, 1, 1, 1, 1, 1],
+	[1, 0, 1, 0, 1, 0, 1],
+	[1, 1, 1, 1, 1, 1, 1],
+	[1, 0, 1, 0, 1, 0, 1],
+	[1, 1, 1, 1, 1, 1, 1],
+	[1, 0, 1, 0, 1, 0, 1],
+	[1, 1, 1, 1, 1, 1, 3],
+], [
+	[0, 0],
+	[0, 6],
+	[2, 6],
+	[2, 0],
+	[4, 0],
+	[4, 6],
+	[6, 6],
+], my_tileset, 64, 12*4, 64, 64);
+
 
 var enemy_start = function(m) {
 	this.speed = 1;
@@ -490,6 +510,7 @@ building.register_event(2, 1, function(m) {
 	if(level < 3) {
 		level = 3;
 		core.reset_timer(80);
+		core.infotext = "LEVEL 3";
 	}
 })
 
@@ -497,6 +518,7 @@ building.register_event(2, 2, function(m) {
 	if(level < 4) {
 		level = 4;
 		core.reset_timer(80);
+		core.infotext = "LEVEL 4";
 	}
 })
 
@@ -504,6 +526,7 @@ building.register_event(2, 4, function(m) {
 	if(level < 5) {
 		level = 5;
 		core.reset_timer(50);
+		core.infotext = "LEVEL 5";
 	}
 })
 
@@ -511,13 +534,14 @@ building.register_event(3, 1, function(m) {
 	if(level < 6) {
 		level = 6;
 		core.reset_timer(40);
+		core.infotext = "ALMOST DONE!";
 	}
 })
 
 core.reset = function() {
 	level = 0;
 	time.time_scale = 0.5;
-	core.infotext = "PRESS \"W\" OR \"S\" TO SELECT AN ITEM AND PLACE IT!";
+	core.infotext = "PROTECT THE SERVER FROM VIRUSES!";
 };
 
 core.on_timer = function() {
@@ -548,4 +572,5 @@ core.register_map(map_2);
 core.register_map(map_3);
 core.register_map(map_4);
 core.register_map(map_5);
+core.register_map(map_6);
 core.loaded_map = 0;

@@ -95,6 +95,9 @@ var core = new function() {
 		} else if(core.game_state == 1) {
 			//Select Level
 			ctx.clearRect(-canvas.width/2, -canvas.height/2, canvas.width, canvas.height);
+			ctx.fillStyle = "#5c5c5c";
+			ctx.fillRect(-110, -15*core.registered_maps.length - 20, 220, core.registered_maps.length*30 + 40);
+			
 			for(var i = 0; i < core.registered_maps.length; i++) {
 				var str = "MAP " + (i+1);
 				
@@ -102,7 +105,7 @@ var core = new function() {
 					str = "- " + str + " -"
 				}
 				
-				core.font_2.draw(str, -core.font_2.get_width(str)/2, (i-core.loaded_map)*30);
+				core.font_2.draw(str, -core.font_2.get_width(str)/2, (i)*30 - 15*core.registered_maps.length);
 			}
 		} else if(core.game_state == 2) {
 			//Game
@@ -168,6 +171,15 @@ var core = new function() {
 				building.change_selected(-1);
 			} else if(e.keyCode == 83 || e.keyCode == 40) {
 				building.change_selected(1);
+			} else if(e.keyCode == 27) {
+				core.reset();
+				building.reset();
+				core.reset_timer();
+				core.registered_maps[core.loaded_map].reset()
+				core.health = 6;
+				core.coins = 500;
+				
+				this.game_state = 1;
 			} else {
 				console.log(e.keyCode);
 			}
@@ -201,8 +213,15 @@ var core = new function() {
 				if(this.loaded_map > this.registered_maps.length-1) {
 					this.loaded_map = this.registered_maps.length-1;
 				}
+			} else if(e.keyCode == 27) {
+				core.game_state = 0;
 			} else {
 				console.log(e.keyCode);
+			}
+		} else if(this.game_state == 3) {
+			if(e.keyCode == 32 || e.keyCode == 13) {
+				core.reset_timer();
+				this.game_state = 1;
 			}
 		}
 	}
