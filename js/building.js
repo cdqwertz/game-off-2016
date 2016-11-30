@@ -2,6 +2,7 @@ var building = new function() {
 	this.entities = [];
 	this.events = [];
 	this.selected = 0;
+	this.next_goal = 0;
 
 	this.register_entity = function(e, c) {
 		this.entities.push([e, c, 0]);
@@ -23,6 +24,11 @@ var building = new function() {
 			} else {
 				ctx.drawImage(img, input.mouseX + 5, input.mouseY + 10, m.w/3, m.h/3);
 			}
+		}
+		
+		if(this.next_goal != -1) {
+			var img = entities.registered_entities[this.entities[this.next_goal][0]].img[0];
+			ctx.drawImage(img, (canvas.width/2) - m.w - 10, canvas.height/2 - 40 - m.h, m.w, m.h);
 		}
 		
 		ctx.fillStyle = "#404040";

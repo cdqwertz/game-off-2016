@@ -146,14 +146,33 @@ var core = new function() {
 	
 	this.onmousedown = function(e) {
 		if(this.game_state == 1) {
-			core.reset();
-			building.reset();
-			core.reset_timer();
-			core.registered_maps[core.loaded_map].reset()
-			core.health = 6;
-			core.coins = 500;
+			if(utils.is_inside(input.mouseX, input.mouseY, 
+					   -110, -15*this.registered_maps.length - 20, 220, 
+					   this.registered_maps.length*30 + 40)) {
+					   
+				for(var i = 0; i < this.registered_maps.length; i++) {
+					if(utils.is_inside(input.mouseX, input.mouseY, -110, (i)*30 - 15*this.registered_maps.length, 220, 30)) {
+						this.loaded_map = i;
+						break;
+					}
+				}
+		
+				this.reset();
+				building.reset();
+				this.reset_timer();
+				this.registered_maps[this.loaded_map].reset()
+				this.health = 6;
+				this.coins = 500;
 	
-			this.game_state = 2;
+				this.game_state = 2;
+			}
+		} else if(this.game_state == 0) {
+			if(utils.is_inside(input.mouseX, input.mouseY, 
+					   -this.img_start_game.width/2, -this.img_start_game.height/2, 
+					   this.img_start_game.width, this.img_start_game.height)) {
+				
+				this.game_state = 1;
+			}
 		}
 	};
 

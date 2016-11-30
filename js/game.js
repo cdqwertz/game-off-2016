@@ -22,7 +22,7 @@ my_tileset.register_tile(new tile(
 		this.timer += time.dtime;
 		if(this.timer > 1000) {
 			if(level == 1 || level == 0) {
-				if(Math.random() > 0.9) {
+				if(Math.random() > 0.95) {
 					m.spawn_entity(x,y, 1);
 				} else {
 					m.spawn_entity(x,y, 0);
@@ -493,8 +493,9 @@ building.register_event(0, 1, function(m) {
 	if(level < 1) {
 		time.time_scale = 2;
 		core.reset_timer(50);
-		core.infotext = "PRESS \"SPACE\" TO SPEED UP OR SLOW DOWN";
+		core.infotext = "THE IMAGE ABOVE SHOWS WHAT TO BUILD NEXT.";
 		level = 1;
+		building.next_goal = 0;
 	}
 })
 
@@ -502,7 +503,8 @@ building.register_event(0, 2, function(m) {
 	if(level < 2) {
 		level = 2;
 		core.reset_timer(80);
-		core.infotext = "GREAT!";
+		core.infotext = "LEVEL 2";
+		building.next_goal = 2;
 	}
 })
 
@@ -511,6 +513,7 @@ building.register_event(2, 1, function(m) {
 		level = 3;
 		core.reset_timer(80);
 		core.infotext = "LEVEL 3";
+		building.next_goal = 2;
 	}
 })
 
@@ -519,6 +522,7 @@ building.register_event(2, 2, function(m) {
 		level = 4;
 		core.reset_timer(80);
 		core.infotext = "LEVEL 4";
+		building.next_goal = 2;
 	}
 })
 
@@ -527,6 +531,7 @@ building.register_event(2, 4, function(m) {
 		level = 5;
 		core.reset_timer(50);
 		core.infotext = "LEVEL 5";
+		building.next_goal = 3;
 	}
 })
 
@@ -535,6 +540,7 @@ building.register_event(3, 1, function(m) {
 		level = 6;
 		core.reset_timer(40);
 		core.infotext = "ALMOST DONE!";
+		building.next_goal = -1;
 	}
 })
 
@@ -542,6 +548,7 @@ core.reset = function() {
 	level = 0;
 	time.time_scale = 0.5;
 	core.infotext = "PROTECT THE SERVER FROM VIRUSES!";
+	building.next_goal = 0;
 };
 
 core.on_timer = function() {
@@ -554,7 +561,7 @@ core.on_timer = function() {
 			core.coins = 500;
 			core.loaded_map = 0;
 			
-			core.reset_timer(3);
+			core.reset_timer(1);
 			core.game_state = 3;
 		} else {
 			core.health--;

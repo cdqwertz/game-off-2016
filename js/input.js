@@ -8,10 +8,7 @@ var input = new function() {
 	};
 
 	this.onmousedown = function(e) {
-		if(core.game_state == 0) {
-			core.game_state = 1;
-			core.reset();
-		} else if (core.game_state == 1) {
+		if (core.game_state == 1 || core.game_state == 0) {
 			core.onmousedown(e)
 		} else {
 			building.onmousedown(e, core.get_map());
