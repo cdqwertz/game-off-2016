@@ -74,6 +74,8 @@ var building = new function() {
 					m.spawn_entity(p[0], p[1], this.entities[this.selected][0]);
 					core.coins -= this.entities[this.selected][1];
 					this.entities[this.selected][2]++;
+					
+					core.sound_manager.play(1);
 
 					for(var i = 0; i < this.events.length; i++) {
 						if(this.events[i][0] == this.selected &&

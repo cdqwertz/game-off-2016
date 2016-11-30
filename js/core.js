@@ -37,6 +37,8 @@ var core = new function() {
 		}
 	};
 	this.infotext = "";
+	
+	this.sound_manager = new sound_manager();
 
 	//Buttons
 	this.img_start_game = new Image();
@@ -76,6 +78,9 @@ var core = new function() {
 		ctx.mozImageSmoothingEnabled = false;
 		ctx.webkitImageSmoothingEnabled = false;
 		ctx.msImageSmoothingEnabled = false;
+
+		this.sound_manager.register_sound(new sound("sound_1"));
+		this.sound_manager.register_sound(new sound("sound_2"));
 
 		window.requestAnimationFrame(core.update);
 	};
@@ -164,6 +169,7 @@ var core = new function() {
 				this.health = 6;
 				this.coins = 500;
 	
+				this.sound_manager.play(0);
 				this.game_state = 2;
 			}
 		} else if(this.game_state == 0) {
@@ -171,6 +177,7 @@ var core = new function() {
 					   -this.img_start_game.width/2, -this.img_start_game.height/2, 
 					   this.img_start_game.width, this.img_start_game.height)) {
 				
+				this.sound_manager.play(0);
 				this.game_state = 1;
 			}
 		}

@@ -203,6 +203,7 @@ var enemy_update = function (coins) {
 
 				this.destination = m.get_pos(m.path[this.i][0], m.path[this.i][1]);
 			} else {
+				core.sound_manager.play(0);
 				core.health--;
 				m.remove_entity(this);
 			}
